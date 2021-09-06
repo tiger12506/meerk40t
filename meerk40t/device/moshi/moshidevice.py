@@ -22,14 +22,12 @@ from ..basedevice import (
     DRIVER_STATE_PROGRAM,
     DRIVER_STATE_RAPID,
     DRIVER_STATE_RASTER,
-    PLOT_AXIS,
-    PLOT_DIRECTION,
     PLOT_FINISH,
     PLOT_JOG,
     PLOT_RAPID,
     PLOT_SETTING,
     PLOT_LEFT_UPPER,
-    PLOT_RIGHT_LOWER, PLOT_START,
+    PLOT_START,
 )
 
 MILS_IN_MM = 39.3701
@@ -108,8 +106,7 @@ def plugin(kernel, lifecycle=None):
         @context.console_command(("estop", "abort"), input_type="moshi", help=_("Abort Job"))
         def pipe_abort(command, channel, _, data=None, **kwargs):
             """
-            Abort output job. Usually due to the functionality of Moshiboards this will do
-            nothing as the job will have already sent to the backend.
+            Abort output job. This will clear the program queue and send a real time estop command to the laser.
             """
             spooler, driver, output = data
             output.estop()
@@ -856,6 +853,7 @@ class MoshiController:
         Abort the current buffer and data queue.
         """
         self._buffer = b""
+        self._programs.clear()
         self.context.signal("pipe;buffer", 0)
         self.realtime_stop()
         self.update_state(STATE_TERMINATE)
