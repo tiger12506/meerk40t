@@ -5,20 +5,20 @@ name: Python package
 
 on:
   push:
-    branches: [ main, legacy, 0.7 ]
+    branches: [main, legacy, 0.7]
   pull_request:
-    branches: [ main, legacy, 0.7 ]
+    branches: [main, legacy, 0.7]
   schedule:
     - cron: '0 23 * * 5'
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, windows-2016, windows-2019, windows-2022, macos-10.15, macos-11]
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8, 3.9, 3.10]
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9, 3.10.0-rc.2]
 
     steps:
 
