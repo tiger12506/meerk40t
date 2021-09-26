@@ -1,5 +1,5 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# This workflow builds PyInstaller single-file executables
+# of Meerk40t for Windows, (and hopefully) Linux, Mac
 
 name: Meerk40t
 
@@ -81,6 +81,10 @@ jobs:
         python-version: 3.7
         architecture: 'x86'
 # Yikes. ch341dll.dll is not compatible with 64-bit python/pyinstaller/ctypes
+#
+# Python 3.7, wxPython 4.0.7-post2 is specifically chosen to workaround
+# issue meerk40t/meerk40t#242, once the SetLocale issue is resolved, we can test
+# newer versions again. Python 3.8 is latest possible for Windows 7 support.
 
     - name: Install dependencies
       run: |
@@ -88,8 +92,11 @@ jobs:
         pip install wxPython==4.0.7-post2
         pip install meerk40t-camera ezdxf opencv-python-headless
 
-#       Compile bootloaders in order to reduce virus totals
+# Compile bootloaders in order to reduce virus totals
+# PYTHONHASHSEED is an attempt to get deterministic builds for VirusTotal
     - name: Build pyinstaller, generate bootloaders
+      env:
+        PYTHONHASHSEED: 12506
       run: |
         git clone --depth=1 https://github.com/pyinstaller/pyinstaller
         cd pyinstaller/bootloader
@@ -129,3 +136,19 @@ jobs:
           asset_path: dist/meerk40t.exe
           asset_name: MeerK40t.exe
           asset_content_type: application/exe
+
+# VirusTotal auto-submission doesn't work because asset is too large to upload
+# through the ghaction-virustotal github action.
+# Can fork and fix, or forget about it altogether
+
+#    - name: VirusTotal Submission
+#      id: virustotal
+#      uses: crazy-max/ghaction-virustotal@v2
+#      with:
+#          vt_api_key: ${{ secrets.VT_API_KEY }}
+#          files: |
+#            dist/meerk40t.exe
+#
+#    - name: Check VirusTotal Results
+#      run: |
+#        echo ${{ steps.virustotal.outputs.analysis }}
