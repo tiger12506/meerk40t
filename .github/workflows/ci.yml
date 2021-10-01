@@ -9,7 +9,12 @@ on:
 
 jobs:
   build-ubuntu:
-    runs-on: [ubuntu-latest, centos7]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: centos7
     steps:
     - name: Checkout meerk40t
       uses: actions/checkout@v2
