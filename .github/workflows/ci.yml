@@ -8,13 +8,30 @@ on:
     types: [published]
 
 jobs:
+  build-centos7:
+    runs-on: centos7
+    steps:
+    - name: Checkout meerk40t
+      uses: actions/checkout@v2
+
+    - name: Build Meerk40t
+      run: |
+        mv meerk40t.py mk40t.py
+        pyinstaller --windowed --onefile --name meerk40t mk40t.py
+        mv mk40t.py meerk40t.py
+        mv dist/meerk40t dist/MeerK40t-centos7-glibc2.17
+
+    - name: Upload Release Assets
+      id: release
+      uses: softprops/action-gh-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          dist/MeerK40t-centos7-glibc2.17
+
+       
   build-ubuntu:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-          - os: centos7
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout meerk40t
       uses: actions/checkout@v2
