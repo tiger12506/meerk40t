@@ -13,6 +13,10 @@ jobs:
     steps:
     - name: Checkout meerk40t
       uses: actions/checkout@v2
+    
+    - name: Ensure latest meerk40t-camera
+      run: |
+        pip3 install meerk40t-camera
 
     - name: Build Meerk40t
       run: |
