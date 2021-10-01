@@ -6,12 +6,9 @@ name: Meerk40t
 on:
   release:
     types: [published]
-  workflow_dispatch:
 
 jobs:
   build-ubuntu:
-
-    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout meerk40t
@@ -27,31 +24,24 @@ jobs:
         pip3 install pyinstaller wheel
         pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+
     - name: Build meerk40t
       run: |
         mv meerk40t.py mk40t.py
         pyinstaller --windowed --onefile --name meerk40t mk40t.py
         mv mk40t.py meerk40t.py
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        mv dist/meerk40t dist/MeerK40t-Ubuntu-Latest
+
+# Switched to using softprops/action-gh-release@v1
+# because it supports uploading to existing release based on current tag.
+    - name: Upload Release Assets
+      id: release
+      uses: softprops/action-gh-release@v1
       with:
-          tag_name: release-${{ github.sha }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: true
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/meerk40t
-          asset_name: MeerK40t
-          asset_content_type: application/exe
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          dist/MeerK40t-Ubuntu-Latest
+
 
   build-windows:
     runs-on: windows-latest
@@ -59,21 +49,6 @@ jobs:
     - name: Checkout meerk40t
       uses: actions/checkout@v2
 
-#    - name: Set outputs
-#      id: prevars
-#      run: |
-#          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-#          echo "::set-output name=tag::$(git tag --points-at)"
-#    - name: Fix outputs
-#      id: vars
-#      if: ${{ steps.prevars.outputs.tag == '' }}
-#      run: |
-#          echo "::set-output name=sha_short::${{ steps.prevars.outputs.sha_short }}"
-#          echo "::set-output name=tag::${{ steps.prevars.outputs.sha_short }}"
-#    - name: Check outputs
-#      run: |
-#          echo ${{ steps.vars.outputs.sha_short }}
-#          echo ${{ steps.vars.outputs.tag }}
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
@@ -104,15 +79,12 @@ jobs:
         python3 setup.py install
         cd ..
 
-#    - name: Directory structure
-#      run: |
-#        tree D:/ /a /f
-
     - name: Build MeerK40t
       run: |
         move meerk40t.py mk40t.py
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
+        move meerk40t.exe MeerK40t.exe
 
 # Switched to using softprops/action-gh-release@v1
 # because it supports uploading to existing release based on current tag.
@@ -122,20 +94,5 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
-          dist/meerk40t.exe
+          dist/MeerK40t.exe
 
-# VirusTotal auto-submission doesn't work because asset is too large to upload
-# through the ghaction-virustotal github action.
-# Can fork and fix, or forget about it altogether
-
-#    - name: VirusTotal Submission
-#      id: virustotal
-#      uses: crazy-max/ghaction-virustotal@v2
-#      with:
-#          vt_api_key: ${{ secrets.VT_API_KEY }}
-#          files: |
-#            dist/meerk40t.exe
-#
-#    - name: Check VirusTotal Results
-#      run: |
-#        echo ${{ steps.virustotal.outputs.analysis }}
