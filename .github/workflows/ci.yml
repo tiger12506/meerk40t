@@ -9,27 +9,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-actions:
-    runs-on: windows-latest
-    steps:
-    - name: Show variables
-      id: vars
-      run: |
-        echo ${{ github.ref }}
-        echo ${{ github.ref }} > ${{ github.workspace }}ref.txt
-        echo "::set-output name=tag::$(git tag --points-at)"
-    - name: Upload Release Assets
-      id: release
-      uses: softprops/action-gh-release@v1
-      with:
-        body_path: ${{ github.workspace }}ref.txt
-        token: ${{ secrets.GITHUB_TOKEN }}
-        files: |
-          ${{ github.workspace }}ref.txt
-    - name: Show release upload url
-      run: |
-        echo ${{ steps.vars.outputs.tag }}
-
   build-ubuntu:
 
     if: ${{ false }}
@@ -75,27 +54,26 @@ jobs:
           asset_content_type: application/exe
 
   build-windows:
-    if: ${{ false }}
     runs-on: windows-latest
     steps:
     - name: Checkout meerk40t
       uses: actions/checkout@v2
 
-    - name: Set outputs
-      id: prevars
-      run: |
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-          echo "::set-output name=tag::$(git tag --points-at)"
-    - name: Fix outputs
-      id: vars
-      if: ${{ steps.prevars.outputs.tag == '' }}
-      run: |
-          echo "::set-output name=sha_short::${{ steps.prevars.outputs.sha_short }}"
-          echo "::set-output name=tag::${{ steps.prevars.outputs.sha_short }}"
-    - name: Check outputs
-      run: |
-          echo ${{ steps.vars.outputs.sha_short }}
-          echo ${{ steps.vars.outputs.tag }}
+#    - name: Set outputs
+#      id: prevars
+#      run: |
+#          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+#          echo "::set-output name=tag::$(git tag --points-at)"
+#    - name: Fix outputs
+#      id: vars
+#      if: ${{ steps.prevars.outputs.tag == '' }}
+#      run: |
+#          echo "::set-output name=sha_short::${{ steps.prevars.outputs.sha_short }}"
+#          echo "::set-output name=tag::${{ steps.prevars.outputs.sha_short }}"
+#    - name: Check outputs
+#      run: |
+#          echo ${{ steps.vars.outputs.sha_short }}
+#          echo ${{ steps.vars.outputs.tag }}
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
@@ -136,27 +114,15 @@ jobs:
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
 
-#    - name: Create Release
-#      id: create_release
-#      uses: actions/create-release@v1
-#      env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#          tag_name: release-${{ steps.vars.outputs.tag }}
-#          release_name: ${{ steps.vars.outputs.tag }}
-#          draft: false
-#          prerelease: false
-
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# Switched to using softprops/action-gh-release@v1
+# because it supports uploading to existing release based on current tag.
+    - name: Upload Release Assets
+      id: release
+      uses: softprops/action-gh-release@v1
       with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/meerk40t.exe
-          asset_name: MeerK40t.exe
-          asset_content_type: application/exe
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          dist/meerk40t.exe
 
 # VirusTotal auto-submission doesn't work because asset is too large to upload
 # through the ghaction-virustotal github action.
