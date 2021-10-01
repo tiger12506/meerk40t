@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-ubuntu:
-    runs-on: ubuntu-latest, centos7
+    runs-on: [ubuntu-latest, centos7]
     steps:
     - name: Checkout meerk40t
       uses: actions/checkout@v2
