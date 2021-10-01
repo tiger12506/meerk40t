@@ -15,6 +15,18 @@ jobs:
     - name: Show variables
       run: |
         echo ${{ github.ref }}
+        echo ${{ github.ref }} > ${{ github.workspace }}ref.txt
+    - name: Upload Release Assets
+      id: release
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: ${{ github.workspace }}ref.txt
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          ${{ github.workspace }}ref.txt
+    - name: Show release upload url
+      run: |
+        echo ${{ steps.release.outputs.upload_url }}
 
   build-ubuntu:
 
