@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-ubuntu:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout meerk40t
@@ -80,15 +81,17 @@ jobs:
         cd ..
 
     - name: Build MeerK40t (wxPython 4.0.7-post2)
+      if: ${{ false }}
       run: |
         move meerk40t.py mk40t.py
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
         move dist/meerk40t.exe dist/wx-meerk40t.exe
 
-    - name: Build MeerK40t (wxPython 4.1.2)
+    - name: Build MeerK40t (wxPython bleeding edge)
       run: |
-        pip install wxpython==4.1.2
+        pip uninstall wxPython
+        pip install https://github.com/wxWidgets/Phoenix/archive/master.zip
         move meerk40t.py mk40t.py
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
