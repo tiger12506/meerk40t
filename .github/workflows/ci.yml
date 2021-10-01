@@ -13,9 +13,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Show variables
+      id: vars
       run: |
         echo ${{ github.ref }}
         echo ${{ github.ref }} > ${{ github.workspace }}ref.txt
+        echo "::set-output name=tag::$(git tag --points-at)"
     - name: Upload Release Assets
       id: release
       uses: softprops/action-gh-release@v1
@@ -26,7 +28,7 @@ jobs:
           ${{ github.workspace }}ref.txt
     - name: Show release upload url
       run: |
-        echo ${{ steps.release.outputs.upload_url }}
+        echo ${{ steps.vars.outputs.tag }}
 
   build-ubuntu:
 
