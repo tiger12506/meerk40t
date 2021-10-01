@@ -6,7 +6,6 @@ name: Meerk40t
 on:
   release:
     types: [published]
-      - 'v[0-9]+.*'
   workflow_dispatch:
 
 jobs:
