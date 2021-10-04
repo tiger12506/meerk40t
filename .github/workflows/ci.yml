@@ -23,7 +23,7 @@ jobs:
         mv meerk40t.py mk40t.py
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/linux/meerk40t.spec --add-data 'locale/:locale/'
         mv mk40t.py meerk40t.py
-        mv dist/meerk40t dist/MeerK40t-centos7-glibc2.17
+        mv dist/MeerK40t dist/MeerK40t-centos7-glibc2.17
 
     - name: Upload Release Assets
       id: release
