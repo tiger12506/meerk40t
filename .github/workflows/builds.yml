@@ -5,8 +5,8 @@
 name: Build executables
 
 on:
-#  release:
-#    types: [published]
+  release:
+    types: [published]
   push:
     branches: [main, legacy, 0.7]
     paths:
