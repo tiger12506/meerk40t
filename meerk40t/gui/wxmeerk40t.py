@@ -13,6 +13,12 @@ try:
     # so we are doing it here even though we do not refer to it in this file
     # richtext is used for the Console panel.
     from wx import richtext
+except ImportError as e:
+    from ..core.exceptions import Mk40tImportAbort
+
+    raise Mk40tImportAbort("wx.richtext")
+
+try:
     import wx
 except ImportError as e:
     from ..core.exceptions import Mk40tImportAbort
