@@ -13,10 +13,9 @@ try:
     # so we are doing it here even though we do not refer to it in this file
     # richtext is used for the Console panel.
     from wx import richtext
+    RICH_TEXT = True
 except ImportError as e:
-    from ..core.exceptions import Mk40tImportAbort
-
-    raise Mk40tImportAbort("wx.richtext")
+    RICH_TEXT = False
 
 try:
     import wx
@@ -24,6 +23,11 @@ except ImportError as e:
     from ..core.exceptions import Mk40tImportAbort
 
     raise Mk40tImportAbort("wxpython")
+
+if RICH_TEXT:
+    from .panes.consolepanelrich import Console
+else:
+    from .panes.consolepanel import Console
 
 from ..kernel import Module
 from ..main import APPLICATION_NAME, APPLICATION_VERSION
@@ -46,7 +50,7 @@ from .moshi.moshidrivergui import MoshiDriverGui
 from .notes import Notes
 from .operationproperty import OperationProperty
 from .panes.camerapanel import CameraInterface
-from .panes.consolepanel import Console
+
 from .panes.devicespanel import DeviceManager
 from .panes.navigationpanels import Navigation
 from .panes.spoolerpanel import JobSpooler
