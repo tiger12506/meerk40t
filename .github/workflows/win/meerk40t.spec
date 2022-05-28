@@ -45,4 +45,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False , version='file_version.txt', icon='meerk40t.ico')
+          console=False , version='file_version.txt', icon='../meerk40t.ico')
