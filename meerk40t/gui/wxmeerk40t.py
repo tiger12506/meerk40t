@@ -15,6 +15,7 @@ try:
     import wx
     from wx import richtext
 except ImportError as e:
+    raise e
     from ..core.exceptions import Mk40tImportAbort
 
     raise Mk40tImportAbort("wxpython")
