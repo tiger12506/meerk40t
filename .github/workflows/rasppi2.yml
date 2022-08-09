@@ -1,0 +1,24 @@
+# This workflow builds PyInstaller single-file executables
+# of Meerk40t for Raspberry Pi
+
+name: Meerk40t (Raspberry2)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install RaspberryPi Docker
+        run: |
+          docker run -d --name raspberrypi -p2222:2222 -p80:80 -p443:443 --privileged desktopcontainers/raspberrypi
+          docker exec raspberrypi uname -a
+          docker container ls
+          docker images
+
+      - name: Can we ssh?
+        run: ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost uname -a
+
+
