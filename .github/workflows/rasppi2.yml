@@ -11,20 +11,44 @@ jobs:
   test-docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Uncache Docker image
+        run: echo "FIXME"
+
       - name: Install RaspberryPi Docker
         run: |
-          docker run -d --name raspberrypi -p2222:2222 -p80:80 -p443:443 --privileged desktopcontainers/raspberrypi
+          docker run -d --rm --name raspberrypi -v/root/shared:/root -p2222:2222 -p80:80 -p443:443 --privileged desktopcontainers/raspberrypi
           docker exec raspberrypi uname -a
-#          docker container ls
-#          docker images
-
-      - name: Wait
-        run: sleep 120
 
       - name: Install sshpass
         run: sudo apt-get -y install sshpass
 
+      - name: Wait
+        run: sleep 120
+#          while not $(( docker exec raspberrypi ps -e | grep ssh)) loop;
+
       - name: Can we ssh?
         run: sshpass -p "raspberry" ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost uname -a
 
+      - name: Transfer build script to rpi
+        run: |
+          cp script /root/shared/script
+          echo "FIXME"
+
+      - name: Run build script
+        run: |
+          chmod a+x /root/script
+          docker exec raspberrypi /root/script
+
+      - name: Copy built meerk40t back out of rpi
+        run: |
+          echo "FIXME"
+
+      - name: Upload Release Assets
+        if: ${{ false }}
+        id: release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+              /root/shared/dist/MeerK40t-Linux
 
