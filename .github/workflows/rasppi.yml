@@ -14,22 +14,24 @@ jobs:
       image: desktopcontainers/raspberrypi
       ports:
         - 2222
-      volumes:
-        - ~:~
     steps:
       - name: Install RaspberryPi Docker
         run: (ls /.dockerenv && echo Found dockerenv)
 
       - name: Sleep for 5 min
-        run: (sleep 5)
+        run: (sleep 300)
 
       - name: Qemu present and running?
-        run: ps -e | grep qemu
+        run: |
+          ps -e | grep -i qemu > /github/home/is-qemu.txt
 
   is-still-running:
     runs-on: ubuntu-latest
     needs: test-docker
     steps:
+      - name: Is File There?
+        run: echo /home/runner/work/_temp/_github_home/is-qemu.txt
+
       - name: Can we ssh?
         run: ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost uname -a
 
