@@ -15,8 +15,11 @@ jobs:
         run: |
           docker run -d --name raspberrypi -p2222:2222 -p80:80 -p443:443 --privileged desktopcontainers/raspberrypi
           docker exec raspberrypi uname -a
-          docker container ls
-          docker images
+#          docker container ls
+#          docker images
+
+      - name: Wait
+        run: sleep 120
 
       - name: Can we ssh?
         run: ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost uname -a
