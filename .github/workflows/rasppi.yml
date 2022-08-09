@@ -1,0 +1,18 @@
+# This workflow builds PyInstaller single-file executables
+# of Meerk40t for Raspberry Pi
+
+name: Meerk40t (Raspberry)
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  test-docker:
+    runs-on: ubuntu-latest
+    container: desktopcontainers/raspberrypi
+    steps:
+      - name: Install RaspberryPi Docker
+        run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
+
+
