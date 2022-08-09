@@ -10,9 +10,20 @@ jobs:
 
   test-docker:
     runs-on: ubuntu-latest
-    container: desktopcontainers/raspberrypi
+    container:
+      image: desktopcontainers/raspberrypi
+      ports:
+        - 2222
     steps:
       - name: Install RaspberryPi Docker
         run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
+
+      - name: Qemu present and running?
+        run: ps -e | grep qemu
+  is-still-running:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Can we ssh?
+        run: ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost uname -a
 
 
