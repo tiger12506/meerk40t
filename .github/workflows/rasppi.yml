@@ -4,10 +4,10 @@
 name: Meerk40t (Raspberry)
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
-
   test-docker:
     runs-on: ubuntu-latest
     container:
@@ -23,6 +23,7 @@ jobs:
 
       - name: Qemu present and running?
         run: ps -e | grep qemu
+
   is-still-running:
     runs-on: ubuntu-latest
     needs: test-docker
