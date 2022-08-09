@@ -21,7 +21,10 @@ jobs:
       - name: Wait
         run: sleep 120
 
+      - name: Install sshpass
+        run: sudo apt-get -y install sshpass
+
       - name: Can we ssh?
-        run: ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost uname -a
+        run: sshpass -p "raspberry" ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost uname -a
 
 
