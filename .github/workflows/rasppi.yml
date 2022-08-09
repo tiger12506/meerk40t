@@ -16,7 +16,10 @@ jobs:
         - 2222
     steps:
       - name: Install RaspberryPi Docker
-        run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
+        run: (ls /.dockerenv && echo Found dockerenv) && (ps -e | grep -i qemu)
+
+      - name: Sleep for 5 min
+        run: (sleep 5)
 
       - name: Qemu present and running?
         run: ps -e | grep qemu
