@@ -19,6 +19,7 @@ jobs:
         pip3 install ezdxf pyserial
         pip3 install scipy
         pip3 install meerk40t-camera opencv-python-headless
+        pip3 install pypotrace
 
     - name: Build Meerk40t
       run: |
