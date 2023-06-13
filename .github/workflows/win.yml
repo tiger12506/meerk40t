@@ -62,6 +62,7 @@ jobs:
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
 
+        cd meerk40t
         move external_plugins.py external_plugins_build.py
         move external_plugins.unused external_plugins.py 
         cd ..
