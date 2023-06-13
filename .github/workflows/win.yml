@@ -21,7 +21,6 @@ jobs:
 # Latest version of python support by Windows 7 is Python 3.8
 
     - name: Install dependencies
-      run: |
 # These are included by the pip install .[all] because they are listed as dependencies of the meerk40t package
 #        pip install wxPython
 #        pip install ezdxf
@@ -29,6 +28,7 @@ jobs:
 #        pip install meerk40t-camera opencv-python-headless==4.5.3.56
 
 # pip install .[all] installs to pip this meerk40t (local), rather than using an old one from pypi
+      run: |
         pip install .[all]
         pip install wheel
         pip install potracer
