@@ -18,15 +18,22 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
-        architecture: 'x64'
+# Latest version of python support by Windows 7 is Python 3.8
 
     - name: Install dependencies
       run: |
+# These are included by the pip install .[all] because they are listed as dependencies of the meerk40t package
+#        pip install wxPython
+#        pip install ezdxf
+#        pip install pyserial
+#        pip install meerk40t-camera opencv-python-headless==4.5.3.56
+
+# pip install .[all] installs to pip this meerk40t (local), rather than using an old one from pypi
         pip install .[all]
         pip install wheel
         pip install potracer
         pip install meerk40t-barcodes
-# ==4.1.1
+
 # Compile bootloaders in order to reduce virus totals
 # PYTHONHASHSEED is an attempt to get deterministic builds for VirusTotal
 # 05/28/2022 JS - Locked pyinstaller at v4.9 because 4.10 couldn't find the icon 
@@ -44,20 +51,24 @@ jobs:
 
     - name: Build MeerK40t
       run: |
+# pyinstaller struggles recognizing and including imports that are dynamic (such as for the plugins)
+# So for build purposes, we replace the dynamic imports with the static listing that we include in builds
         cd meerk40t
         move external_plugins.py external_plugins.unused
         move external_plugins_build.py external_plugins.py
         cd ..
+
+# Rename meerk40t.py so pyinstaller doesn't get confused by the package being the same name as the file
         move meerk40t.py mk40t.py
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
+
+# Restore the original dynamic plugin import code
         cd meerk40t
         move external_plugins.py external_plugins_build.py
         move external_plugins.unused external_plugins.py 
         cd ..
 
-# Switched to using softprops/action-gh-release@v1
-# because it supports uploading to existing release based on current tag.
     - name: Upload Release Assets
       id: release
       uses: softprops/action-gh-release@v1
