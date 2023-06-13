@@ -50,21 +50,18 @@ jobs:
         cd ..
 
     - name: Build MeerK40t
-      run: |
 # pyinstaller struggles recognizing and including imports that are dynamic (such as for the plugins)
 # So for build purposes, we replace the dynamic imports with the static listing that we include in builds
+      run: |
         cd meerk40t
         move external_plugins.py external_plugins.unused
         move external_plugins_build.py external_plugins.py
         cd ..
 
-# Rename meerk40t.py so pyinstaller doesn't get confused by the package being the same name as the file
         move meerk40t.py mk40t.py
         pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
 
-# Restore the original dynamic plugin import code
-        cd meerk40t
         move external_plugins.py external_plugins_build.py
         move external_plugins.unused external_plugins.py 
         cd ..
