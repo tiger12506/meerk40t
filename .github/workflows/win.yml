@@ -19,6 +19,8 @@ jobs:
       with:
         python-version: 3.8
         # Latest version of python support by Windows 7 is Python 3.8
+        architecture: x86
+        # 32-bit architecture required for libusb to connect properly
 
     - name: Install dependencies
       run: |
