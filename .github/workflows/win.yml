@@ -14,16 +14,14 @@ jobs:
     - name: Checkout meerk40t
       uses: actions/checkout@v2
 
-    - name: Set up Python 3.7
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
         architecture: 'x86'
 # Yikes. ch341dll.dll is not compatible with 64-bit python/pyinstaller/ctypes
 #
-# Python 3.7, wxPython 4.0.7-post2 is specifically chosen to workaround
-# issue meerk40t/meerk40t#242, once the SetLocale issue is resolved, we can test
-# newer versions again. Python 3.8 is latest possible for Windows 7 support.
+# Python 3.8 is latest possible for Windows 7 support.
 
     - name: Install dependencies
       run: |
