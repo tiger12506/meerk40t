@@ -26,8 +26,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install wheel
-        pip install https://files.pythonhosted.org/packages/5e/ae/0d98e3707678c96d86aec0fe5002637801892f17281cc123521ab929e8fd/Pillow-10.0.0-cp38-cp38-win_amd64.whl
-        pip install wxPython
+        pip install -U wxPython
         pip install ezdxf
         pip install pyserial
         pip install bitarray
