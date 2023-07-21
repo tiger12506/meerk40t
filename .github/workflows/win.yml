@@ -48,7 +48,7 @@ jobs:
         cd pyinstaller/bootloader
         python3 ./waf distclean all --target-arch=32bit
         cd ..
-        python3 setup.py install
+        pip3 install .
         cd ..
 
     - name: Build MeerK40t
