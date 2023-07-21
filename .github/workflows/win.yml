@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install wheel
-        pip install wxPython==4.1.1
+        pip install wxPython
         pip install ezdxf
         pip install pyserial
         pip install bitarray
