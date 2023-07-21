@@ -52,7 +52,7 @@ jobs:
     - name: Build MeerK40t
       run: |
         move meerk40t.py mk40t.py
-        pyinstaller --windowed --onefile --name meerk40t .github/workflows/win/meerk40t.spec
+        pyinstaller --spec-path .github/workflows/win/meerk40t.spec
         move mk40t.py meerk40t.py
 
 # Switched to using softprops/action-gh-release@v1
