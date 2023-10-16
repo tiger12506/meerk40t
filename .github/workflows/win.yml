@@ -29,7 +29,8 @@ jobs:
         pip install numpy==1.23.5
         pip install pyusb
         pip install wheel
-        pip install potracer
+        pip install pypotrace-windows
+        pip install pyclipr
         pip install pillow==9.5.0
         pip install wxPython
         pip install ezdxf
