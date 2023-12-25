@@ -57,7 +57,7 @@ class SilhouetteDevice(Service):
         ]
         self.register_choices("bed_dim", choices)
 
-        self.view = View(self.bedwidth, self.bedheight, dpi=1000.0)
+        self.view = View(self.bedwidth, self.bedheight, dpi=508.0)
 
         self.state = 0
 
