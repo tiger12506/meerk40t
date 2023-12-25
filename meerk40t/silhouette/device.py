@@ -57,6 +57,19 @@ class SilhouetteDevice(Service):
         ]
         self.register_choices("bed_dim", choices)
 
+        choices = [
+            {
+                "attr": "interpolate",
+                "object": self,
+                "default": 50,
+                "type": int,
+                "label": _("Curve Interpolation"),
+                "section": "_5_Config",
+                "tip": _("Distance of the curve interpolation in mils"),
+            },
+        ]
+        self.register_choices("silhouette_adv", choices)
+
         self.view = View(self.bedwidth, self.bedheight, dpi=508.0)
 
         self.state = 0
