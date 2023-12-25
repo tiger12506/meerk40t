@@ -7,15 +7,27 @@ Author: Tiger12506
 Heavily references: https://github.com/fablabnbg/inkscape-silhouette
 """
 import time
-from ..core.units import UNITS_PER_INCH, UNITS_PER_MIL, UNITS_PER_MM
 from meerk40t.core.cutcode.gotocut import GotoCut
 from meerk40t.core.cutcode.homecut import HomeCut
 from meerk40t.core.cutcode.linecut import LineCut
+from meerk40t.core.cutcode.quadcut import QuadCut
+from meerk40t.core.cutcode.cubiccut import CubicCut
 from meerk40t.core.cutcode.waitcut import WaitCut
 
-CMD_EOT = b'\x04'
-CMD_ENQ = b'\x05'
+from ..tools.geomstr import Geomstr
+
+# End of Text - marks the end of a command
 CMD_ETX = b'\x03'
+# Esacpe - send the escape byte
+CMD_ESC = b'\x1b'
+
+### Escape Commands
+# End of Transmission - also can init device
+CMD_EOT = b'\x04'
+# Enquire command - returns device status
+CMD_ENQ = b'\x05'
+# Negative Acknowledge - also returns device tool setup
+CMD_NAK = b'\x15'
 
 
 class SilhouetteDriver:
@@ -28,7 +40,8 @@ class SilhouetteDriver:
         self.native_x = 0
         self.native_y = 0
 
-        self.stepper_step_size = UNITS_PER_MM * 0.05  # Characteristic of Silhouette machines, step size is 0.05mm
+        self.toolholder = 0  # TODO: Make settable as a parameter of operations
+
         self.queue = []
 
         self.out_pipe = print
@@ -42,41 +55,85 @@ class SilhouetteDriver:
         else: print(e)
 
     def initialize(self):
-        self.send_escaped(CMD_EOT)
+        self(CMD_ESC + CMD_EOT)
 
     def status(self):
-        self(CMD_ENQ)
+        self(CMD_ESC + CMD_ENQ)
+
+    def query_info(self):
+        self(f"FG")
 
     def hold_work(self, priority):
-        self(f"spooler check: {priority}")
         return False
 
     def job_start(self, job):
-        self(f"job started {job}")
+        pass
 
     def move_abs(self, x, y):
+        self.native_x = x
+        self.native_y = y
         self(f"M{x},{y}")
 
     def draw_abs(self, x, y):
         self(f"D{x},{y}")
+        self.native_x = x
+        self.native_y = y
 
     def move_rel(self, dx, dy):
-        self(f"move_rel({dx}, {dy})")
+        x = self.native_x + dx
+        y = self.native_y + dy
+        self.move_abs(x, y)
+
+    def set_tool(self):
+        self(f"J{self.toolholder}")
+
+    def set_pressure(self, pressure):
+        self(f"FX{pressure}, {self.toolholder}")
+
+    def set_speed(self, speed):
+        self(f"!{speed},{self.toolholder}")
+
+    def set_depth(self, depth):
+        self(f"TF{depth},{self.toolholder}")
 
     def plot(self, plot):
-        self(f"plot({plot})")
         self.queue.append(plot)
 
     def plot_start(self):
-        self("plot_start()")
         for q in self.queue:
             while self.hold_work(0):
                 if self.service.kernel.is_shutdown:
                     return
                 time.sleep(0.05)
             if isinstance(q, LineCut):
-                self.move_abs(*q.start)
+                if (self.native_x, self.native_y) != q.start:
+                    self.move_abs(*q.start)
                 self.draw_abs(*q.end)
+            elif isinstance(q, QuadCut):
+                if (self.native_x, self.native_y) != q.start:
+                    self.move_abs(*q.start)
+                interp = self.service.interpolate
+                g = Geomstr()
+                g.quad(complex(*q.start), complex(*q.c()), complex(*q.end))
+                for p in list(g.as_equal_interpolated_points(distance=interp))[1:]:
+                    while self.paused:
+                        time.sleep(0.05)
+                    self.draw_abs(p.real, p.imag)
+            elif isinstance(q, CubicCut):
+                if (self.native_x, self.native_y) != q.start:
+                    self.move_abs(*q.start)
+                interp = self.service.interpolate
+                g = Geomstr()
+                g.cubic(
+                    complex(*q.start),
+                    complex(*q.c1()),
+                    complex(*q.c2()),
+                    complex(*q.end),
+                )
+                for p in list(g.as_equal_interpolated_points(distance=interp))[1:]:
+                    while self.paused:
+                        time.sleep(0.05)
+                    self.draw_abs(p.real, p.imag)
             elif isinstance(q, HomeCut):
                 self.home()
             elif isinstance(q, WaitCut):
@@ -87,22 +144,24 @@ class SilhouetteDriver:
         return False
 
     def job_finish(self, job):
-        self(f"job finished {job}")
+        pass
 
     def pause(self):
-        self("Pause!")
+        pass
 
     def resume(self):
-        self("Resume!")
+        pass
 
     def home(self):
-        self("Home!")
+        self.move_as(0, 0)
+        self.native_x = 0
+        self.native_y = 0
 
     def wait(self, dwell_time):
         time.sleep(dwell_time)
 
     def laser_on(self):
-        self("Cutter down!")
+        pass
 
     def laser_off(self):
-        self("Cutter up!")
+        pass
