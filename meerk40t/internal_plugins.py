@@ -120,9 +120,9 @@ def plugin(kernel, lifecycle):
 
         kernel.add_plugin(newlyplugin)
 
-        from .tigerlaser.plugin import plugin as tigerplugin
+        from .silhouette.plugin import plugin as silhouetteplugin
 
-        kernel.add_plugin(tigerplugin)
+        kernel.add_plugin(silhouetteplugin)
 
         from .gui.plugin import plugin as wxplugin
 

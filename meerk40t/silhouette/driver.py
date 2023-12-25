@@ -1,5 +1,5 @@
 
-class TigerDriver:
+class SilhouetteDriver:
     def __init__(self, service, channel=None, *args, **kwargs):
         super().__init__()
         self.service = service
@@ -10,7 +10,7 @@ class TigerDriver:
         self.native_y = 0
 
     def __repr__(self):
-        return f"TigerDriver({self.name})"
+        return f"SilhouetteDriver({self.name})"
 
     def __call__(self, e, real=False):
         print(e)

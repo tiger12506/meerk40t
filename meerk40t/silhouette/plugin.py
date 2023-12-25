@@ -1,8 +1,8 @@
 """
-Tiger Device Plugin
+Silhouette Device Plugin
 """
 
-from meerk40t.tigerlaser.device import TigerDevice
+from meerk40t.silhouette.device import SilhouetteDevice
 
 
 def plugin(kernel, lifecycle=None):
@@ -12,28 +12,28 @@ def plugin(kernel, lifecycle=None):
         return [gui.plugin]
 
     if lifecycle == "register":
-        kernel.register("provider/device/tiger", TigerDevice)
+        kernel.register("provider/device/silhouette", SilhouetteDevice)
         _ = kernel.translation
         kernel.register(
-            "dev_info/tiger-device",
+            "dev_info/silhouette-device",
             {
-                "provider": "provider/device/tiger",
-                "friendly_name": _("Tiger Example Laser"),
+                "provider": "provider/device/silhouette",
+                "friendly_name": _("Silhouette Vinyl Cutter"),
                 "extended_info": _(
-                    "Laser does nothing except says 'home!' when you home."
+                    "Silhouette brand vinyl cutters use a drag knife."
                 ),
                 "priority": 0,
-                "family": _("Dummy Laser"),
+                "family": _("Silhouette"),
                 "family_priority": 9,
                 "choices": [
                     {
                         "attr": "label",
-                        "default": "Tiger",
+                        "default": "Silhouette",
                     },
                 ],
             },
         )
     if lifecycle == "preboot":
-        suffix = "tiger"
+        suffix = "silhouette"
         for d in kernel.derivable(suffix):
             kernel.root(f"service device start -p {d} {suffix}\n")

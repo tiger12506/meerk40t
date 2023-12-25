@@ -7,12 +7,12 @@ from meerk40t.kernel import Service
 
 from ..core.spoolers import Spooler
 from ..core.units import Length
-from .driver import TigerDriver
+from .driver import SilhouetteDriver
 
 
-class TigerDevice(Service):
+class SilhouetteDevice(Service):
     """
-    Tiger Device Service.
+    Silhouette Device Service.
     """
 
     def __init__(self, kernel, path, *args, choices=None, **kwargs):
@@ -23,7 +23,7 @@ class TigerDevice(Service):
             {
                 "attr": "label",
                 "object": self,
-                "default": "tiger",
+                "default": "Silhouette",
                 "type": str,
                 "label": _("Label"),
                 "tip": _("What is this device called."),
@@ -61,7 +61,7 @@ class TigerDevice(Service):
 
         self.state = 0
 
-        self.driver = TigerDriver(self)
+        self.driver = SilhouetteDriver(self)
         self.add_service_delegate(self.driver)
 
         self.spooler = Spooler(self, driver=self.driver)

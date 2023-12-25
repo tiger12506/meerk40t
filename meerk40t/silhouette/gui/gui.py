@@ -1,11 +1,11 @@
-from meerk40t.gui.icons import icons8_info_50
+from meerk40t.gui.icons import icon_meerk40t
 
 
 def plugin(service, lifecycle):
     if lifecycle == "invalidate":
         return not service.has_feature("wx")
     if lifecycle == "service":
-        return "provider/device/tiger"
+        return "provider/device/silhouette"
     if lifecycle == "added":
         # Define GUI information here.
 
@@ -14,8 +14,8 @@ def plugin(service, lifecycle):
         def popup_info(event):
             dlg = wx.MessageDialog(
                 None,
-                "The Tiger Laser is the Best Laser!",
-                "Dummy Device",
+                "This is the device for Silhouette vinyl cutters!",
+                "Silhouette",
                 wx.OK | wx.ICON_WARNING,
             )
             dlg.ShowModal()
@@ -24,9 +24,9 @@ def plugin(service, lifecycle):
         service.register(
             "button/control/Info",
             {
-                "label": "Tiger Laser",
-                "icon": icons8_info_50,
-                "tip": "Provide information about the Tiger Laser",
+                "label": "Silhouette Vinyl Cutter",
+                "icon": icon_meerk40t,
+                "tip": "Provide information about the Silhouette vinyl cutter",
                 "action": popup_info,
             },
         )
