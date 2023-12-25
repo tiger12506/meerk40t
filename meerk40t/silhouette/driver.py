@@ -154,7 +154,7 @@ class SilhouetteDriver:
         self.paused = False
 
     def home(self):
-        self.move_as(0, 0)
+        self.move_abs(0, 0)
         self.native_x = 0
         self.native_y = 0
 
