@@ -59,6 +59,23 @@ class SilhouetteDevice(Service):
 
         choices = [
             {
+                "attr": "interface",
+                "object": self,
+                "default": "USB",
+                "style": "combosmall",
+                "choices": ["USB", "mock"],
+                "display": [_("USB"), _("mock")],
+                "type": str,
+                "label": _("Interface Type"),
+                "tip": _("Select the interface type for the Silhouette device"),
+                "section": "_20_Protocol",
+                "signals": "update_interface",
+            },
+        ]
+        self.register_choices("interface", choices)
+
+        choices = [
+            {
                 "attr": "interpolate",
                 "object": self,
                 "default": 50,
