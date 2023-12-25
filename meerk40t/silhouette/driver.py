@@ -36,6 +36,7 @@ class SilhouetteDriver:
         self.service = service
         self.name = str(self.service)
         self.state = 0
+        self.paused = False
 
         self.native_x = 0
         self.native_y = 0
@@ -147,10 +148,10 @@ class SilhouetteDriver:
         pass
 
     def pause(self):
-        pass
+        self.paused = True
 
     def resume(self):
-        pass
+        self.paused = False
 
     def home(self):
         self.move_as(0, 0)
