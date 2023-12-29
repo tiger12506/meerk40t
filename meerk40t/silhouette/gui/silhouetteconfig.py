@@ -10,7 +10,9 @@ from meerk40t.gui.wxutils import ScrolledPanel, StaticBoxSizer
 
 _ = wx.GetTranslation
 
-
+# This class is made by-hand and exists not as a ChoicePropertyPanel because switching
+# to a USB radio button choice can show the panel_usb_settings with additional settings
+# ChoicePropertyPanel cannot show/hide panel sections
 class ConfigurationInterfacePanel(ScrolledPanel):
     def __init__(self, *args, context=None, **kwds):
         kwds["style"] = kwds.get("style", 0)
@@ -110,8 +112,8 @@ class SilhouetteConfig(MWindow):
             self.notebook_main, wx.ID_ANY, context=self.context,
         )
 
-        panel_global = ChoicePropertyPanel(
-            self, wx.ID_ANY, context=self.context, choices="silhouette-advanced"
+        panel_adv = ChoicePropertyPanel(
+            self, wx.ID_ANY, context=self.context, choices="silhouette-adv"
         )
 
         panel_warn = WarningPanel(self, id=wx.ID_ANY, context=self.context)
@@ -120,14 +122,14 @@ class SilhouetteConfig(MWindow):
 
         self.panels.append(panel_device)
         self.panels.append(panel_interface)
-        self.panels.append(panel_global)
+        self.panels.append(panel_adv)
         self.panels.append(panel_warn)
         self.panels.append(panel_actions)
         self.panels.append(panel_formatter)
 
         self.notebook_main.AddPage(panel_device, _("Device"))
         self.notebook_main.AddPage(panel_interface, _("Interface"))
-        self.notebook_main.AddPage(panel_global, _("Advanced"))
+        self.notebook_main.AddPage(panel_adv, _("Advanced"))
         self.notebook_main.AddPage(panel_warn, _("Warning"))
         self.notebook_main.AddPage(panel_actions, _("Default Actions"))
         self.notebook_main.AddPage(panel_formatter, _("Display Options"))

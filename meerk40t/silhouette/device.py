@@ -85,7 +85,7 @@ class SilhouetteDevice(Service):
                 "tip": _("Distance of the curve interpolation in mils"),
             },
         ]
-        self.register_choices("silhouette_adv", choices)
+        self.register_choices("silhouette-adv", choices)
 
         self.view = View(self.bedwidth, self.bedheight, dpi=508.0)
 
