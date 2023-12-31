@@ -1,3 +1,5 @@
+from meerk40t.gui.icons import icons8_connected
+from meerk40t.silhouette.gui.silhouettecontroller import SilhouetteController
 
 
 def plugin(service, lifecycle):
@@ -16,9 +18,23 @@ def plugin(service, lifecycle):
         service.register("window/Configuration", SilhouetteConfig)
         service.register("winpath/Configuration", service)
 
+        # Allows MeerK40t to find the window to display in the menubar
+        service.register("window/SilhouetteController", SilhouetteController)
+        service.register("winpath/SilhouetteController", service)
+
         _ = service._
 
         # These are the buttons that appear in the ribbonbar
+        service.register(
+            "button/control/Controller",
+            {
+                "label": _("Controller"),
+                "icon": icons8_connected,
+                "tip": _("Opens Controller Window"),
+                "help": "devicesilhouette",
+                "action": lambda v: service("window toggle SilhouetteController\n"),
+            },
+        )
         service.register(
             "button/device/Configuration",
             {
