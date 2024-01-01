@@ -31,22 +31,14 @@ class ConfigurationInterfacePanel(ScrolledPanel):
             self, wx.ID_ANY, _("USB"), style=wx.RB_GROUP
         )
         self.radio_usb.SetValue(1)
-        self.radio_usb.SetToolTip(
-            _(
-                "Select this if you have a Silhouette device running through a USB connection."
-            )
-        )
+        self.radio_usb.SetToolTip(_("Select this if you have a Silhouette device running through a USB connection."))
         sizer_interface_radio.Add(self.radio_usb, 1, wx.EXPAND, 0)
 
         self.radio_mock = wx.RadioButton(self, wx.ID_ANY, _("Mock"))
-        self.radio_mock.SetToolTip(
-            _("Select this only for debugging without a physical machine available.")
-        )
+        self.radio_mock.SetToolTip(_("Select this only for debugging without a physical machine available."))
         sizer_interface_radio.Add(self.radio_mock, 1, wx.EXPAND, 0)
 
-        self.panel_usb_settings = ChoicePropertyPanel(
-            self, wx.ID_ANY, context=self.context, choices="usb"
-        )
+        self.panel_usb_settings = ChoicePropertyPanel(self, wx.ID_ANY, context=self.context, choices="usb")
 
         self.SetSizer(sizer_page_1)
         self.Layout()
@@ -54,7 +46,7 @@ class ConfigurationInterfacePanel(ScrolledPanel):
         self.Bind(wx.EVT_RADIOBUTTON, self.on_radio_interface, self.radio_usb)
         self.Bind(wx.EVT_RADIOBUTTON, self.on_radio_interface, self.radio_mock)
 
-        if self.context.interface == "usb":
+        if self.context.interface == "USB":
             self.radio_usb.SetValue(True)
         else:
             # Mock
@@ -72,7 +64,7 @@ class ConfigurationInterfacePanel(ScrolledPanel):
     def on_radio_interface(self, event):
         try:
             if self.radio_usb.GetValue():
-                self.context.interface = "usb"
+                self.context.interface = "USB"
                 self.context.signal("update_interface")
                 self.panel_usb_settings.Show()
         except AttributeError:

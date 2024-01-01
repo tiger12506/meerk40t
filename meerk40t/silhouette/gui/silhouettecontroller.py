@@ -40,7 +40,7 @@ class SilhouetteControllerPanel(wx.Panel):
         sizer_1.Add(self.data_exchange, 1, wx.EXPAND, 0)
 
         self.sil_text = wx.TextCtrl(self, wx.ID_ANY, "", style=wx.TE_PROCESS_ENTER)
-        self.sil_text.SetToolTip(_("Enter a silhuette language command to send it to the laser"))
+        self.sil_text.SetToolTip(_("Enter a silhouette language command to send it to the laser"))
         self.sil_text.SetFocus()
         sizer_1.Add(self.sil_text, 0, wx.EXPAND, 0)
 
@@ -53,9 +53,7 @@ class SilhouetteControllerPanel(wx.Panel):
 
     def button_connect_string(self, pattern):
         context = self.service
-        if context.interface == "USB":
-            return "USB"
-        return "Mock"
+        return str(context.interface)
 
     def on_button_start_connection(self, event):
         if self.state == "connected":

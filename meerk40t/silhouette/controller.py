@@ -6,6 +6,7 @@ I have no idea what this does, but I'm gonna find out while I write it
 import threading
 
 from meerk40t.kernel import signal_listener
+from .usb_connection import USBConnection
 
 
 class SilhouetteController:
@@ -13,7 +14,7 @@ class SilhouetteController:
         self.service = context
         self.connection = None
 
-#        self.update_connection()
+        self.update_connection()
 
         self._sending_thread = None
         self._recving_thread = None
@@ -31,8 +32,7 @@ class SilhouetteController:
     @signal_listener("update_interface")
     def update_connection(self, origin=None, *args):
         if self.service.interface == "USB":
-            pass
-#            self.connection = USBConnection(self.service, self)
+            self.connection = USBConnection(self.service, self)
         else: #Mock
             pass
 #            self.connection = MockConnection(self.service, self)
