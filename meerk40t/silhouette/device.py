@@ -93,8 +93,10 @@ class SilhouetteDevice(Service):
         self.state = 0
 
         self.driver = SilhouetteDriver(self)
-        self.controller = SilhouetteController(self)
         self.add_service_delegate(self.driver)
+
+        self.controller = SilhouetteController(self)
+        self.add_service_delegate(self.controller)
 
         self.spooler = Spooler(self, driver=self.driver)
         self.add_service_delegate(self.spooler)
@@ -126,3 +128,9 @@ class SilhouetteDevice(Service):
         @return: the location in device native units for the current known position.
         """
         return self.driver.native_x, self.driver.native_y
+
+    def location(self):
+        if self.interface == "USB":
+            return f"USB"
+        else:
+            return "mock"

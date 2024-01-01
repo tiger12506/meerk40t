@@ -239,9 +239,7 @@ class USBConnection:
         if packet is not None:
             try:
                 # endpoint, data, timeout
-                self.devices[index].write(
-                    endpoint=WRITE_ENDPOINT, data=packet, timeout=self.timeout
-                )
+                self.devices[index].write(endpoint=WRITE_ENDPOINT, data=packet, timeout=self.timeout)
             except usb.core.USBError as e:
                 if attempt <= 3:
                     try:
@@ -260,9 +258,7 @@ class USBConnection:
 
     def read(self, index=0, attempt=0):
         try:
-            return self.devices[index].read(
-                endpoint=READ_ENDPOINT, size_or_buffer=8, timeout=self.timeout
-            )
+            return self.devices[index].read(endpoint=READ_ENDPOINT, size_or_buffer=8, timeout=self.timeout)
         except usb.core.USBError as e:
             if attempt <= 3:
                 try:

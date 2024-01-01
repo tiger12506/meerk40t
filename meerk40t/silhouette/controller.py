@@ -4,6 +4,7 @@ Silhouette Controller
 I have no idea what this does, but I'm gonna find out while I write it
 """
 import threading
+import time
 
 from meerk40t.kernel import signal_listener
 from .usb_connection import USBConnection
@@ -14,6 +15,7 @@ class SilhouetteController:
         self.service = context
         self.connection = None
 
+        self.event_channel = self.service.channel("silhouette/events")
         self.update_connection()
 
         self._sending_thread = None
@@ -26,13 +28,12 @@ class SilhouetteController:
         self._watchers = []
 
     def __repr__(self):
-        return "SilhouetteController()"
-#        return f"SilhouetteController('{self.service.location()}')"
+        return f"SilhouetteController('{self.service.location()}')"
 
     @signal_listener("update_interface")
     def update_connection(self, origin=None, *args):
         if self.service.interface == "USB":
-            self.connection = USBConnection(self.service, self)
+            self.connection = USBConnection(self.event_channel)
         else: #Mock
             pass
 #            self.connection = MockConnection(self.service, self)
@@ -42,7 +43,9 @@ class SilhouetteController:
             w(data, type=type)
 
     def _channel_log(self, data, type=None):
+        # I don't really understand this architecture. We have log(). We have _watchers. USBConnection really wants a channel. I'm so confused.
         pass
+#        self.event_channel(data)
 
     def add_watcher(self, watcher):
         self._watchers.append(watcher)
@@ -53,7 +56,7 @@ class SilhouetteController:
     def open(self):
         if self.connection.connected:
             return
-        self.connection.connect()
+        self.connection.open()
         if not self.connection.connected:
             self.log("Could not connect.", type="event")
             return
@@ -62,7 +65,7 @@ class SilhouetteController:
     def close(self):
         if not self.connection.connected:
             return
-        self.connection.disconnect()
+        self.connection.close()
         self.log("Disconnecting from Silhouette...", type="event")
 
     def write(self, data):
@@ -96,11 +99,24 @@ class SilhouetteController:
     def _rstop(self, *args):
         self._recving_thread = None
 
+    def stop(self, *args):
+        self._sending_thread = None
+        self.close()
+
+        try:
+            self.remove_watcher(self._channel_log)
+        except (AttributeError, ValueError):
+            pass
+
+    def _sending(self):
+        while self.connection.connected:
+            self._send(self._sending_queue.pop())
+
     def _send(self, line):
         self.connection.write(line)
         self.log(line, type="send")
 
-    def _recv(self):
+    def _recving(self):
         while self.connection.connected:
             response = None
             while not response:

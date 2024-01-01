@@ -82,7 +82,7 @@ class SilhouetteControllerPanel(wx.Panel):
             pass
         elif type == "connection":
             pass
-        self._buffer += f"Type: {type}, data: {data}"
+        self._buffer += f"Type: {type}, data: {data}\r\n"
         self.service.signal("silhouette_controller_update", True)
 
     @signal_listener("silhouette_controller_update")
