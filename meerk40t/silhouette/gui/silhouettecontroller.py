@@ -49,6 +49,7 @@ class SilhouetteControllerPanel(wx.Panel):
 
         self.Bind(wx.EVT_BUTTON, self.on_button_start_connection, self.button_device_connect)
         self.Bind(wx.EVT_TEXT_ENTER, self.on_silcode_enter, self.sil_text)
+        self._buffer = ""
 
     def button_connect_string(self, pattern):
         context = self.service
@@ -73,6 +74,22 @@ class SilhouetteControllerPanel(wx.Panel):
             self.set_button_state("#ffff00", "Connect", icons8_disconnected)
         elif state == "connected":
             self.set_button_state("#00ff00", "Disconnect", icons8_connected)
+
+    def update(self, data, type):
+        if type == "send":
+            pass
+        elif type == "recv":
+            pass
+        elif type == "event":
+            pass
+        elif type == "connection":
+            pass
+        self._buffer += f"Type: {type}, data: {data}"
+        self.service.signal("silhouette_controller_update", True)
+
+    @signal_listener("silhouette_controller_update")
+    def update_text_gui(self, origin, *args):
+        self.data_exchange.AppendText(self._buffer)
 
     def pane_show(self):
         if self.state in (None, "uninitialized", "disconnected"):

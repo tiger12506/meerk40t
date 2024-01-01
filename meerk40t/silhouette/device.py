@@ -8,6 +8,7 @@ from meerk40t.kernel import Service
 from ..core.spoolers import Spooler
 from ..core.units import Length
 from .driver import SilhouetteDriver
+from .controller import SilhouetteController
 
 
 class SilhouetteDevice(Service):
@@ -92,10 +93,21 @@ class SilhouetteDevice(Service):
         self.state = 0
 
         self.driver = SilhouetteDriver(self)
+        self.controller = SilhouetteController(self)
         self.add_service_delegate(self.driver)
 
         self.spooler = Spooler(self, driver=self.driver)
         self.add_service_delegate(self.spooler)
+
+        @self.console_command(
+            "silcode",
+            help=_("Send raw bytes to the device"),
+            input_type=None,
+        )
+        def silcode(command, channel, _, data=None, remainder=None, **kwds):
+            if remainder is not None:
+                channel(remainder)
+                self.driver(remainder + "\r\n")
 
     @property
     def viewbuffer(self):
