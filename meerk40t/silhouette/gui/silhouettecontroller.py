@@ -1,3 +1,5 @@
+import threading
+
 import wx
 
 from meerk40t.gui.icons import (
@@ -50,6 +52,7 @@ class SilhouetteControllerPanel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.on_button_start_connection, self.button_device_connect)
         self.Bind(wx.EVT_TEXT_ENTER, self.on_silcode_enter, self.sil_text)
         self._buffer = ""
+        self._buffer_lock = threading.Lock()
 
     def button_connect_string(self, pattern):
         context = self.service
@@ -75,19 +78,24 @@ class SilhouetteControllerPanel(wx.Panel):
 
     def update(self, data, type):
         if type == "send":
-            pass
+            prefix = "<-- "
         elif type == "recv":
-            pass
+            prefix = "-->\t"
         elif type == "event":
-            pass
+            prefix = ""
         elif type == "connection":
-            pass
-        self._buffer += f"Type: {type}, data: {data}\r\n"
+            prefix = ""
+        with self._buffer_lock:
+            self._buffer += f"{prefix}{data}\n"
         self.service.signal("silhouette_controller_update", True)
 
     @signal_listener("silhouette_controller_update")
     def update_text_gui(self, origin, *args):
-        self.data_exchange.AppendText(self._buffer)
+        # Write out the accumulation of messages in self._buffer when we can achieve the lock (back in gui thread)
+        with self._buffer_lock:
+            buffer = self._buffer
+            self._buffer = ""
+        self.data_exchange.AppendText(buffer)
 
     def pane_show(self):
         if self.state in (None, "uninitialized", "disconnected"):
