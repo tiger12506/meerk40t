@@ -12,5 +12,5 @@ jobs:
     steps:
     - name: Test for IP
       run: |
-        myip="$(dig +short myip.opendns.com @resolver1.opendns.com)"
-        echo "My WAN/Public IP address: ${myip}"
+        server_ip="$(curl ifconfig.co)"
+        printf "Server public ip4 %s\n" $server_ip
