@@ -1,0 +1,15 @@
+# This workflow builds PyInstaller single-file executables
+# of Meerk40t for Linux (CentOS 7 self-hosted runner)
+
+name: Public IP Test (CentOS 7)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-centos7:
+    runs-on: centos7
+    steps:
+    - name: Test for IP
+      run: |
+        echo "Test"
