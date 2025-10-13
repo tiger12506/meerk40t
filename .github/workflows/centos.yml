@@ -18,6 +18,7 @@ jobs:
 
     - name: Ensure dependencies installed
       run: |
+        . /home/jacob/py311/bin/activate
         pip3 install ezdxf pyserial
         pip3 install scipy
         pip3 install meerk40t-camera opencv-python-headless
