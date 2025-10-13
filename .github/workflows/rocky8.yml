@@ -27,7 +27,7 @@ jobs:
       run: |
         . /home/jacob/py311/bin/activate
         mv meerk40t.py mk40t.py
-        pyinstaller --windowed --onefile --name meerk40t .github/workflows/linux/meerk40t.spec
+        pyinstaller .github/workflows/linux/meerk40t.spec
         mv mk40t.py meerk40t.py
         mv dist/MeerK40t dist/MeerK40t-Linux
 
