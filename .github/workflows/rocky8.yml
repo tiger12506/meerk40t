@@ -13,6 +13,10 @@ jobs:
   build-rocky8:
     runs-on: rocky8
     steps:
+    - name: Glibc
+      run: |
+        echo $(ldd --version)
+
     - name: Checkout meerk40t
       uses: actions/checkout@v2
 
