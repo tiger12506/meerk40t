@@ -31,11 +31,20 @@ jobs:
         mv mk40t.py meerk40t.py
         mv dist/MeerK40t dist/MeerK40t-Linux
 
+    - name: Set release version
+      id: set_release_version
+      run: |
+        if [ -n "${{ github.event.release.tag_name }}" ]; then
+          echo "RELEASE_VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+        else
+          echo "RELEASE_VERSION=9.999.9" >> $GITHUB_ENV
+        fi
+
     - name: Upload Release Assets
       id: release
       uses: softprops/action-gh-release@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: ${{ env.RELEASE_VERSION }}
         files: |
           dist/MeerK40t-Linux
-
